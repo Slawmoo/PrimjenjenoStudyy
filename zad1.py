@@ -1,46 +1,50 @@
-
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import math
 
-mtcars = pd.read_csv('mtcars.csv')
-print(mtcars)
+# ucitavanje ociscenih podataka
+df = pd.read_csv('cars_processed.csv')
+print(df.info())
 
-#1
-print('\n\nSLIJEDECI ZADATAK\n\n')
-potrosnjaSortirani = mtcars.sort_values(by = ['mpg'],ascending=False).head(5)
-print(potrosnjaSortirani[['car','mpg']])
+#1 Ispis broja mjerenja u dataframeu
+print("\nBroj mjerenja:", len(df))
 
-#2
-print('\n\nSLIJEDECI ZADATAK\n\n')
-auto3minPotrosnja8cil = mtcars[mtcars['cyl']==8].sort_values(by='mpg',ascending=True).tail(3)
-print(auto3minPotrosnja8cil[['car','cyl','mpg']])
+#2 Ispis tipova stupaca
+print(df.dtypes)
 
-#3
-print('\n\nSLIJEDECI ZADATAK\n\n')
+#3 Automobil s najvećom cijenom
+najskuplji_auto = df.loc[df['selling_price'].idxmax()]
+cijena_kn = round(najskuplji_auto['selling_price'] * 1000, 2)
+print("\nNajskuplji auto:", najskuplji_auto['name'], "(", "{:.2f}".format(cijena_kn), "kn)")
 
-autoAVG6cyl = mtcars[mtcars['cyl']==6]['mpg'].mean()
-print(autoAVG6cyl)
+# Automobil s najmanjom cijenom
+najjeftiniji_auto = df.loc[df['selling_price'].idxmin()]
+cijena_knJEF = round(najjeftiniji_auto['selling_price'] * 1000, 2)
+print("\nNajskuplji auto:", najjeftiniji_auto['name'], "(", "{:.2f}".format(cijena_knJEF), "kn)")
 
-#4
-print('\n\nSLIJEDECI ZADATAK\n\n')
-autoAVG4cylWT2k__2_2k = mtcars[(mtcars['cyl']==4) & ((mtcars['wt']>2.000) & (mtcars['wt']<2.200))]['mpg'].mean()
-print(autoAVG4cylWT2k__2_2k)
+#4 Broj automobila proizvedenih 2012. godine
+broj_automobila_2012 = df['year'].value_counts()[2012]
+print("\nBroj automobila proizvedenih 2012. godine:", broj_automobila_2012)
 
-#5
-print('\n\nSLIJEDECI ZADATAK\n\n')
-print('AUTO MJENJAC ' + str(mtcars[(mtcars['am'] == 1)]['am'].count()))
+#5 Automobil s najviše prijeđenih kilometara
+najvise_km_auto = df.loc[df['km_driven'].idxmax()]
+print("\nAutomobil s najviše prijeđenih kilometara:", najvise_km_auto['name'], "(", najvise_km_auto['km_driven'], "km)")
 
-print('EMANUEL MJENJAC ' + str(mtcars[(mtcars['am'] == 0)]['am'].count()))
+# Automobil s najmanje prijeđenih kilometara
+najmanje_km_auto = df.loc[df['km_driven'].idxmin()]
+print("\nAutomobil s najmanje prijeđenih kilometara:", najmanje_km_auto['name'], "(", najmanje_km_auto['km_driven'], "km)")
 
-#6
-print('\n\nSLIJEDECI ZADATAK\n\n')
+#6 Najčešći broj sjedala
+najcesci_broj_sjedala = df['seats'].value_counts().idxmax()
+print("\nNajčešći broj sjedala:", najcesci_broj_sjedala)
 
-print('AUTO MJENJAC 100+ hp : ' + str(mtcars[(mtcars.am == 1 ) & (mtcars.hp>100)]['hp'].count()))
+#7 Prosječna prijeđena kilometraža za automobile s dizel motorom
+prosjecna_km_dizel = df.groupby('fuel')['km_driven'].mean()['Diesel']
+print("\nProsječna prijeđena kilometraža za automobile s dizel motorom:", prosjecna_km_dizel, "km")
 
-#7
-print('\n\nSLIJEDECI ZADATAK\n\n')
-lbsKgConst = 0.45359237
+# Prosječna prijeđena kilometraža za automobile s benzinskim motorom
+prosjecna_km_benzin = df.groupby('fuel')['km_driven'].mean()['Petrol']
+print("\nProsječna prijeđena kilometraža za automobile s benzinskim motorom:", prosjecna_km_benzin, "km")
 
-print(mtcars[['car','wt']])
-stupacKile = mtcars['wt'] * lbsKgConst
-kileAuta = pd.concat([mtcars['car'], stupacKile], axis=1)
-print(kileAuta[['car','wt']])
