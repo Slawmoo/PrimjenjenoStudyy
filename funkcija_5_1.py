@@ -39,6 +39,7 @@ dataX3 = generate_data(500, 3)
 dataX4 = generate_data(500, 4)
 dataX5 = generate_data(500, 5)
 
+matrices = [dataX1,dataX2,dataX3,dataX4,dataX5]
 # plt.scatter(dataX1[:,0], dataX1[:,1])
 # plt.xlabel('X-axis label')
 # plt.ylabel('Y-axis label')
@@ -69,15 +70,18 @@ dataX5 = generate_data(500, 5)
 # plt.title('Scatter plot')
 # plt.show()
 
-numCentara = range(2, 10)
+numCentara = range(1, 10)
+for matrix in matrices:
+    # Loop over the range of number of clusters and fit KMeans model
+    inertias = []
+    for k in numCentara:
+        model = KMeans(n_clusters=k, n_init='auto')
+        model.fit(matrix)
+        inertias.append(model.inertia_)
 
-# Loop over the range of number of clusters and fit KMeans model
-inertias = []
-for k in numCentara:
-    model = KMeans(n_clusters=k)
-    model.fit(dataX1)
-    inertias.append(model.inertia_)
-
-# Create a line plot of the inertia values
-plt.plot(numCentara, inertias, marker='o')
+    # Create a line plot of the inertia values
+    plt.plot(numCentara, inertias, marker='o')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Inertia')
+plt.title('Inertia vs Number of Clusters')    
 plt.show()
